@@ -178,7 +178,9 @@ glm::vec3 warpPoint(const Delaunay &delaunay0, const Delaunay &delaunay1, glm::v
 	glm::vec3 vert_1_fin = puntos_fin[i_vert_1];
 	glm::vec3 vert_2_fin = puntos_fin[i_vert_2];
 	
-	p = pesos_ini[0] * vert_0_fin + pesos_ini[1] * vert_1_fin + pesos_ini[2] * vert_2_fin;
+	p.x = pesos_ini[0] * vert_0_fin.x + pesos_ini[1] * vert_1_fin.x + pesos_ini[2] * vert_2_fin.x;
+	p.y = pesos_ini[0] * vert_0_fin.y + pesos_ini[1] * vert_1_fin.y + pesos_ini[2] * vert_2_fin.y;
+		p = pesos_ini[0] * vert_0_fin + pesos_ini[1] * vert_1_fin + pesos_ini[2] * vert_2_fin;
 	
 	return p;
 }
