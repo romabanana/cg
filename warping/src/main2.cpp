@@ -103,7 +103,7 @@ int main() {
 			glDisable(GL_DEPTH_TEST);
 			setMatrixes(delaunay_renderer.getShader());
 			delaunay_renderer.draw(current_delaunay().getPuntos(),
-								   show_delaunay ? delaunay0.getTriangulos() : std::vector<Triangulo>{},
+								   shwow_delaunay ? delaunay0.getTriangulos() : std::vector<Triangulo>{},
 								   selected_pt);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -148,37 +148,31 @@ int main() {
 
 // distorsiona un vértice de la geometría
 glm::vec3 warpPoint(const Delaunay &delaunay0, const Delaunay &delaunay1, glm::vec3 p) {
+	/// @todo: completar
+	/*
+		componente z = 0.
 	
-	//entiendo que el problema es que inicialemente se tiene un triangulo y
-	//luego otro triangulo a partir q se mueve un vertice entonces, ¿a donde se 
-	//tiene q mover el punto p?
-	// mover el punto segun a donde se mueve el baricentro? o quiero q se
-	//mantengan los pesos iniciales de p en el nuevo triangulo?
+		El programa arma dos triangulaciones con los puntos 
+		que marca el usuario: 
+		
+		-una con las posiciones originales de los mismos 
+		(es decir, sobre la malla sin deformar) y otra con las
+		posiciones modificadas.
+		
+		-El alumno deberá aprovechar estas triangulaciones 
+		para calcular las nuevas posiciones de
+		los vértices de las primitivas.
 	
-	int ind_triangulo_punto = delaunay0.enQueTriangulo(p); // obtiene el indice
+		help1 : La función warpPoint recibe 2 triangulaciones. 
+		Esto es, 2 vectores de puntos y 2 de triángulos.
+		Pararesolver el problema solo deberá usar los 2 vectores de puntos 
+		(el del argumento delaunay0 contiene los puntos originales,
+		el de delaunay1 contiene los punto desplazados)
+		pero solo una una de las 2 listas de triángulos (¿cuál? ¿por qué?)
+		
+		help2 : ¿ por qué se llama coordenadas baricentricas?
+	*/ 
 	
-	std::vector<Triangulo> triangulos = delaunay0.getTriangulos(); //
-	
-	Triangulo trianguloP = triangulos[ind_triangulo_punto];
-	
-	int i_vert_0 = trianguloP[0];
-	int i_vert_1 = trianguloP[1];
-	int i_vert_2 = trianguloP[2];
-	
-	std::vector<glm::vec3> puntos_ini = delaunay0.getPuntos();
-	std::vector<glm::vec3> puntos_fin = delaunay1.getPuntos();
-	
-	glm::vec3 vert_0_ini = puntos_ini[i_vert_0];
-	glm::vec3 vert_1_ini = puntos_ini[i_vert_1];
-	glm::vec3 vert_2_ini = puntos_ini[i_vert_2];
-	
-	Pesos pesos_ini = calcularPesos(vert_0_ini,vert_1_ini,vert_2_ini,p);
-	
-	glm::vec3 vert_0_fin = puntos_fin[i_vert_0];
-	glm::vec3 vert_1_fin = puntos_fin[i_vert_1];
-	glm::vec3 vert_2_fin = puntos_fin[i_vert_2];
-	
-	p = pesos_ini[0] * vert_0_fin + pesos_ini[1] * vert_1_fin + pesos_ini[2] * vert_2_fin;
 	
 	return p;
 }
