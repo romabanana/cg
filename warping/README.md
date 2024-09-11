@@ -1,6 +1,6 @@
 
 
-#Interpolation project
+# Interpolation project
 
 
 - Barycentric coordinates.
