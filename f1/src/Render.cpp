@@ -12,6 +12,17 @@ glm::mat4 projection_matrix, view_matrix;
 // función para renderizar cada "parte" del auto
 void renderPart(const Car &car, const std::vector<Model> &v_models, const glm::mat4 &matrix, Shader &shader) {
 	// select a shader
+	
+	glm::mat4 desp ( 1.0f, 0.0f, 0.0f, 0.0f, // nuevo eje x
+					0.0f, 1.0f, 0.0f, 0.0f, // nuevo eje y
+					0.0f, 0.0f, 1.0f, 0.0f, // nuevo eje z
+					car.x, 0.3f, car.y, 1.0f ); // desplazamiento
+	
+	glm::mat4 rot ( cos(-car.ang), 0.0f, -sin(-car.ang), 0.0f, // nuevo eje x
+					0.0f, 1.0f, 0.0f, 0.0f, // nuevo eje y
+					sin(-car.ang), 0.0f, cos(-car.ang), 0.0f, // nuevo eje z
+					0.0f, 0.0f, 0.0f, 1.0f ); // desplazamiento
+	
 	for(const Model &model : v_models) {
 		shader.use();
 		
@@ -19,7 +30,13 @@ void renderPart(const Car &car, const std::vector<Model> &v_models, const glm::m
 		if (play) {
 			/// @todo: modificar una de estas matrices para mover todo el auto (todas
 			///        las partes) a la posición (y orientación) que le corresponde en la pista
-			shader.setMatrixes(matrix,view_matrix,projection_matrix);
+			
+			
+			glm::mat4 new_matrix = view_matrix * desp * rot;
+			// why view matrix --> cam
+			
+			shader.setMatrixes(matrix,new_matrix,projection_matrix);
+			
 		} else {
 			glm::mat4 model_matrix = glm::rotate(glm::mat4(1.f),view_angle,glm::vec3{1.f,0.f,0.f}) *
 						             glm::rotate(glm::mat4(1.f),model_angle,glm::vec3{0.f,1.f,0.f}) *
@@ -45,9 +62,19 @@ void setViewAndProjectionMatrixes(const Car &car) {
 		if (top_view) {
 			/// @todo: modificar el look at para que en esta vista el auto siempre apunte hacia arriba
 			glm::vec3 pos_auto = {car.x, 0.f, car.y};
-			view_matrix = glm::lookAt( pos_auto+glm::vec3{0.f,30.f,0.f}, pos_auto, glm::vec3{0.f,0.f,1.f} );
+//			glm::vec3 ang_cam = {-car.x, 0.f, -car.y}; //idk why
+			glm::vec3 ang_cam = {cos(car.ang), 0.f, sin(car.ang)}; //smart
+			
+			view_matrix = glm::lookAt( pos_auto+glm::vec3{0.f,30.f,0.f}, pos_auto, ang_cam );
 		} else {
 			/// @todo: definir view_matrix de modo que la camara persiga al auto desde "atras"
+			glm::vec3 pos_auto = {car.x, 0.f, car.y};
+			glm::vec3 ang_cam = {cos(car.ang), 0.f, sin(car.ang)}; //smart
+			
+			
+			view_matrix = glm::lookAt(pos_auto -4.f*ang_cam + glm::vec3(0.f, 0.75f, 0.f), pos_auto, glm::vec3(0.f, 1.f, 0.f) );
+//			view_matrix = glm::lookAt(pos_auto -4.f*ang_cam + glm::vec3(0.f, 0.15f, 0.f), pos_auto, glm::vec3(0.f, 1.f, 0.f) );
+			
 		}
 	} else {
 		view_matrix = glm::lookAt( glm::vec3{0.f,0.f,3.f}, view_target, glm::vec3{0.f,1.f,0.f} );
@@ -148,7 +175,27 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 				  h_size*sin(alpha), 0.0f, h_size*cos(alpha), 0.0f, 
 				  0.05f, 0.17f, 0.0f, 1.0f );
 
-
+	
+	//wheels movement
+	//steering
+	glm::mat4 turn ( cos(car.rang1), 0.0f, -sin(car.rang1), 0.0f, 
+				  0.0f, 1.0f, 0.0f, 0.0f, 
+				  sin(car.rang1), 0.0f, cos(car.rang1), 0.0f, 
+				  0.0f, 0.0f, 0.0f, 1.0f );
+	
+	frw = frw * turn;
+	flw = flw * turn;
+	
+	//roll
+	glm::mat4 roll ( cos(car.rang2), -sin(car.rang2),0.0f , 0.0f, 
+					sin(car.rang2), cos(car.rang2), 0.0f, 0.0f, 
+					0.0f, 0.0f, 1.0f, 0.0f, 
+					0.0f, 0.0f, 0.0f, 1.0f );
+	
+	frw = frw * roll;
+	flw = flw * roll;
+	rrw = rrw * roll;
+	rlw = rlw * roll;
 	
 	if (body.show or play) {
 		renderPart(car,body.models, m_body,shader);
