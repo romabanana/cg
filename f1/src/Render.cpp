@@ -16,7 +16,7 @@ void renderPart(const Car &car, const std::vector<Model> &v_models, const glm::m
 	glm::mat4 desp ( 1.0f, 0.0f, 0.0f, 0.0f, // nuevo eje x
 					0.0f, 1.0f, 0.0f, 0.0f, // nuevo eje y
 					0.0f, 0.0f, 1.0f, 0.0f, // nuevo eje z
-					car.x, 0.3f, car.y, 1.0f ); // desplazamiento
+					car.x, 0.0f, car.y, 1.0f ); // desplazamiento
 	
 	glm::mat4 rot ( cos(-car.ang), 0.0f, -sin(-car.ang), 0.0f, // nuevo eje x
 					0.0f, 1.0f, 0.0f, 0.0f, // nuevo eje y
@@ -72,7 +72,7 @@ void setViewAndProjectionMatrixes(const Car &car) {
 			glm::vec3 ang_cam = {cos(car.ang), 0.f, sin(car.ang)}; //smart
 			
 			
-			view_matrix = glm::lookAt(pos_auto -4.f*ang_cam + glm::vec3(0.f, 0.75f, 0.f), pos_auto, glm::vec3(0.f, 1.f, 0.f) );
+			view_matrix = glm::lookAt(pos_auto -4.f*ang_cam + glm::vec3(0.f, 5.75f, 0.f), pos_auto, glm::vec3(0.f, 1.f, 0.f) );
 //			view_matrix = glm::lookAt(pos_auto -4.f*ang_cam + glm::vec3(0.f, 0.15f, 0.f), pos_auto, glm::vec3(0.f, 1.f, 0.f) );
 			
 		}
@@ -89,9 +89,12 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 	/// @todo: armar la matriz de transformación de cada parte para construir el auto
 	
 	// chasis
+	float fix = 0.15f;
+	glm::mat4 m_body ( 1.f, 0.0f, 0.0f, 0.0f, // nuevo eje x
+					  0.0f, 1.f, 0.0f, 0.0f, // nuevo eje y
+					  0.0f, 0.0f, 1.f, 0.0f, // nuevo eje z
+					  0.f, fix, 0.f, 1.0f ); // desplazamiento
 	
-	glm::mat4 m_body = glm::mat4(1.00f); //no cambia.
-		
 	// wheels 
 	
 	float front_wheel_size = 0.15f;
@@ -101,22 +104,22 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 	glm::mat4 frw( front_wheel_size, 0.0f, 0.0f, 0.0f, // nuevo eje x
 				0.0f, front_wheel_size, 0.0f, 0.0f, // nuevo eje y
 				0.0f, 0.0f, front_wheel_size, 0.0f, // nuevo eje z
-				0.5f, 0.0f, wheel_distance, 1.0f ); // desplazamiento
+				0.5f, fix, wheel_distance, 1.0f ); // desplazamiento
 	
 	glm::mat4 flw( front_wheel_size, 0.0f, 0.0f, 0.0f, 
 				  0.0f, front_wheel_size, 0.0f, 0.0f, 
 				  0.0f, 0.0f, front_wheel_size, 0.0f, 
-				  0.5f, 0.0f, -wheel_distance, 1.0f );
+				  0.5f, fix, -wheel_distance, 1.0f );
 	
 	glm::mat4 rrw( rear_wheel_size, 0.0f, 0.0f, 0.0f, 
 				  0.0f, rear_wheel_size, 0.0f, 0.0f, 
 				  0.0f, 0.0f, rear_wheel_size, 0.0f, 
-				  -0.9f, 0.0f, wheel_distance, 1.0f );
+				  -0.9f, fix, wheel_distance, 1.0f );
 	
 	glm::mat4 rlw( rear_wheel_size, 0.0f, 0.0f, 0.0f, 
 				  0.0f, rear_wheel_size, 0.0f, 0.0f, 
 				  0.0f, 0.0f, rear_wheel_size, 0.0f, 
-				  -0.9f, 0.0f, -wheel_distance, 1.0f );
+				  -0.9f, fix, -wheel_distance, 1.0f );
 	
 	
 	// front wing
@@ -127,7 +130,7 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 	glm::mat4 fw ( front_wing_size*cos(alpha), 0.0f, front_wing_size*(-sin(alpha)), 0.0f, 
 				  0.0f, front_wing_size, 0.0f, 0.0f, 
 				  front_wing_size*sin(alpha), 0.0f, front_wing_size*cos(alpha), 0.0f, 
-				  0.82f, front_wing_height, 0.0f, 1.0f );
+				  0.82f, front_wing_height + fix, 0.0f, 1.0f );
 	
 	//rear wing 
 	float rear_wing_size = 0.25f;
@@ -136,7 +139,7 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 	glm::mat4 rw ( rear_wing_size*cos(alpha), 0.0f, rear_wing_size*(-sin(alpha)), 0.0f, 
 				  0.0f, rear_wing_size, 0.0f, 0.0f, 
 				  rear_wing_size*sin(alpha), 0.0f, rear_wing_size*cos(alpha), 0.0f, 
-				  -1.1f, rear_wing_height, 0.0f, 1.0f );
+				  -1.1f, rear_wing_height + fix, 0.0f, 1.0f );
 	
 	//driver
 	float driver_size = 0.08f;
@@ -144,48 +147,52 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 	glm::mat4 d( driver_size*cos(alpha), 0.0f, driver_size*(-sin(alpha)), 0.0f, 
 				  0.0f, driver_size, 0.0f, 0.0f, 
 				  driver_size*sin(alpha), 0.0f, driver_size*cos(alpha), 0.0f, 
-				  -0.05f, driver_height, 0.0f, 1.0f );
-	
-	//halo gg
-	float beta = 3.14159265;
-	float halo_size = 0.25f;
-	
-	glm::mat4 h0 ( halo_size, 0.0f, 0.0f, 0.0f, 
-				  0.0f, halo_size, 0.0f, 0.0f, 
-				  0.0f, 0.0f, halo_size, 0.0f, 
-				  0.05f, 0.05f, 0.0f, 1.0f );
-	
-	glm::mat4 h1 ( cos(beta+alpha), 0.0f, -sin(beta+alpha), 0.0f, 
-				  0.0f, 1.0f, 0.0f, 0.0f, 
-				  sin(beta+alpha), 0.0f, cos(beta+alpha), 0.0f, 
-				  0.05f, 0.05f, 0.0f, 1.0f );
-	
-	glm::mat4 h2 ( cos(beta), -sin(beta), 0.0f, 0.0f, 
-				  sin(beta), cos(beta), 0.0f, 0.0f, 
-				  0.0f, 0.0f, 1.0f, 0.0f, 
-				  0.05f, 0.05f, 0.0f, 1.0f );
-	
-
-	glm::mat4 h = h0*h1*h2;
-	
-	float h_size = 0.15f;
-	
-	glm::mat4 hx ( h_size*cos(alpha), 0.0f, h_size*(-sin(alpha)), 0.0f, 
-				  0.0f, h_size, 0.0f, 0.0f, 
-				  h_size*sin(alpha), 0.0f, h_size*cos(alpha), 0.0f, 
-				  0.05f, 0.17f, 0.0f, 1.0f );
+				  -0.05f, driver_height + fix , 0.0f, 1.0f );
+//	
+//	//halo gg
+//	float beta = 3.14159265;
+//	float halo_size = 0.25f;
+//	float halo_height = 0.05f + fix;
+//	
+//	glm::mat4 h0 ( halo_size, 0.0f, 0.0f, 0.0f, 
+//				  0.0f, halo_size, 0.0f, 0.0f, 
+//				  0.0f, 0.0f, halo_size, 0.0f, 
+//				  0.05f, halo_height, 0.0f, 1.0f );
+//	
+//	glm::mat4 h1 ( cos(beta+alpha), 0.0f, -sin(beta+alpha), 0.0f, 
+//				  0.0f, 1.0f, 0.0f, 0.0f, 
+//				  sin(beta+alpha), 0.0f, cos(beta+alpha), 0.0f, 
+//				  0.05f, halo_height, 0.0f, 1.0f );
+//	
+//	glm::mat4 h2 ( cos(beta), -sin(beta), 0.0f, 0.0f, 
+//				  sin(beta), cos(beta), 0.0f, 0.0f, 
+//				  0.0f, 0.0f, 1.0f, 0.0f, 
+//				  0.05f, halo_height, 0.0f, 1.0f );
+//	
+//
+//	glm::mat4 h = h0*h1*h2;
+//	
+//	float h_size = 0.15f;
+//	float hx_height = 0.17f + fix;
+//	
+//	glm::mat4 hx ( h_size*cos(alpha), 0.0f, h_size*(-sin(alpha)), 0.0f, 
+//				  0.0f, h_size, 0.0f, 0.0f, 
+//				  h_size*sin(alpha), 0.0f, h_size*cos(alpha), 0.0f, 
+//				  0.05f, hx_height, 0.0f, 1.0f );
 
 	
 	//wheels movement
-	//steering
-	glm::mat4 turn ( cos(car.rang1), 0.0f, -sin(car.rang1), 0.0f, 
+//	//steering
+	glm::mat4 turn ( cos(-car.rang1), 0.0f, -sin(-car.rang1), 0.0f, 
 				  0.0f, 1.0f, 0.0f, 0.0f, 
-				  sin(car.rang1), 0.0f, cos(car.rang1), 0.0f, 
+				  sin(-car.rang1), 0.0f, cos(-car.rang1), 0.0f, 
 				  0.0f, 0.0f, 0.0f, 1.0f );
-	
 	frw = frw * turn;
 	flw = flw * turn;
-	
+//	
+//	frw = frw * rotate(glm::mat4(1.f),car.rang1, glm::vec3(0.f,-1.f,0.f));
+//	flw = flw * rotate(glm::mat4(1.f),car.rang1, glm::vec3(0.f,-1.f,0.f));
+//	
 	//roll
 	glm::mat4 roll ( cos(car.rang2), -sin(car.rang2),0.0f , 0.0f, 
 					sin(car.rang2), cos(car.rang2), 0.0f, 0.0f, 
@@ -225,16 +232,16 @@ void renderCar(const Car &car, const std::vector<Part> &parts, Shader &shader) {
 		float scl = 0.30f;
 		renderPart(car,rwing.models,rw,shader); //rear wing
 	}
-	
-	if (rwing.show or play) {
-		float scl = 0.30f;
-		renderPart(car,rwing.models,h,shader); // halo
-	}
-	
-	if (fwing.show or play) {
-		renderPart(car,fwing.models, hx,shader); //halo
-	}
-	
+//	
+//	if (rwing.show or play) {
+//		float scl = 0.30f;
+//		renderPart(car,rwing.models,h,shader); // halo
+//	}
+//	
+//	if (fwing.show or play) {
+//		renderPart(car,fwing.models, hx,shader); //halo
+//	}
+//	
 	if (helmet.show or play) {
 		renderPart(car,helmet.models, d,shader); //driver
 	}
