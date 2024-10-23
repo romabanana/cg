@@ -53,22 +53,24 @@ glm::mat4 getTransform(const Spline &spline, double t) {
 	glm::vec3 deriv;
 	glm::vec3 fish = spline.at(t, deriv);
 	deriv = glm::normalize(deriv);
-	
 	glm::vec3 axis = glm::vec3 (1.f,0.f,0.f);
-	float alpha = acos(dot(axis,deriv));
-//	float alpha = atan2(deriv.x, axis.x);
+	float alpha;
+	
+	if(deriv.z>0){
+		deriv = deriv*(-1.f);
+		alpha = acos(dot(axis,deriv)) + 3.1416;
+	}else{
+		
+		alpha = acos(dot(axis,deriv));
+	}
+		
+	
 	float size = .3f;
 	
 	glm::vec3 e_x(size*cos(alpha),0.f,size*(-sin(alpha)));
 	glm::vec3 e_y(0.f,size,0.f);
 	glm::vec3 e_z(size*sin(alpha),0.f,size*(cos(alpha)));
 	glm::vec3 pos(fish.x,fish.y,fish.z);
-	
-	
-//	glm::vec3 e_x(1.f,0.f,0.f);
-//	glm::vec3 e_y(0.f,1.f,0.f);
-//	glm::vec3 e_z(0.f,0.f,1.f);
-//	glm::vec3 pos(0.f,0.f,0.f);
 	
 	// armar la matriz
 	glm::mat4 m(1.f);
