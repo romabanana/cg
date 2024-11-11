@@ -4,8 +4,6 @@
 #include "Shaders.hpp"
 
 #include "Billboard.hpp"
-#include <iostream>
-using namespace std;
 
 extern std::vector<Shader> flare_shaders;
 extern int win_width, win_height;
@@ -32,44 +30,31 @@ Flare::~Flare(){}
 std::vector<glm::vec2> Flare::generateTextureCoordinatesForFlare(float size, const glm::vec2& center) {
 	std::vector<glm::vec2> texture_coords;
 	
-	
 	/// @todo: Generar las coordenadas de textura (S, T) en funcion de la 
 	///	posicion y tamanio del flare en pantalla (en pixeles).
 	///	Ayuda: las variables win_width y win_height contienen el ancho y 
 	///	alto de la pantalla respectivamente.
-	
-	
-	//vertice 1
-//	std::cout<<size<<" "<<std::endl;
-	size = size;
-	float s = (center.x - (size/2))/win_width;
-	float t = (center.y + (size/2))/win_height;
-////	std::cout<<s<<" "<<t<<std::endl;
-	texture_coords.push_back(glm::vec2 (s,t));
-////	
-////	//vertice 2
-	s = (center.x + (size/2))/win_width;
-	t = (center.y + (size/2))/win_height;
-////	std::cout<<s<<" "<<t<<std::endl;
-////	
-	texture_coords.push_back(glm::vec2 (s,t));
-////	//vertice 3
-	s = (center.x + (size/2))/win_width;
-	t = (center.y - (size/2))/win_height;
-////	std::cout<<s<<" "<<t<<std::endl;
-	texture_coords.push_back(glm::vec2 (s,t));
-////	//vertice 4
-////	
-	s = (center.x - (size/2))/win_width;
-	t = (center.y - (size/2))/win_height;
-////	std::cout<<s<<" "<<t<<std::endl;
-////	std::cout<<std::endl;
-////	
-//		
-	texture_coords.push_back(glm::vec2 (s,t));
 
+	//bl
+	float s = 1; 
+	float t = 1;
 	
+	texture_coords.push_back(glm::vec2 (s,t));
+	//br
 	
+	s = 2;
+	t = 1;
+	texture_coords.push_back(glm::vec2 (s,t));
+	//tr
+	
+	s = 2;
+	t = 2;
+	texture_coords.push_back(glm::vec2 (s,t));
+	//tl
+	
+	s = 1;
+	t = 2;
+	texture_coords.push_back(glm::vec2 (s,t));
 	return texture_coords;
 }
 

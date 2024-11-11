@@ -25,17 +25,16 @@ std::vector<glm::vec2> generateTextureCoordinatesForSkyDome(const std::vector<gl
 	/// @todo: generar el vector de coordenadas de texturas para los vertices de la esfera
 	for(auto v : positions){
 		
-		float x = v.x;
-		float y = -v.z;
-		float z = -v.y;
+		//y en lugar de z...
 		
-		
-		float tita = atan2(y, x);
-		float phi = atan2(z, sqrt((x*x)+(y*y)));
+		float r = sqrt((v.z*v.z)+(v.x*v.x)+(v.y*v.y));
+		float tita = atan2(v.z, v.x); //e [0,2pi]
+		float phi = acos(v.y/r); //e [0,pi]
 		float pi = 3.14159265359f; //
 		
-		float s = ((tita)/(2*pi)) + 0.5f;
-		float t = 0.5f + (phi/pi);
+		float s = ((tita + pi)/(2*pi));//e [0,1]
+		float t = (phi/pi);//e [0,1]
+		
 		
 		tex_coords.push_back(glm::vec2 (s,t));
 	}
