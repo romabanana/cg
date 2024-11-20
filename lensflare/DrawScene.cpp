@@ -27,8 +27,8 @@ std::vector<glm::vec2> generateTextureCoordinatesForSkyDome(const std::vector<gl
 		
 		//y en lugar de z...
 		
-		float r = sqrt((v.z*v.z)+(v.x*v.x)+(v.y*v.y));
-		float tita = atan2(v.z, v.x); //e [0,2pi]
+		float r = sqrt((v.z*v.z)+(v.x*v.x)+(v.y*v.y)); //radio de la esfera...
+		float tita = atan2(v.z, v.x); //e [-pi,pi]
 		float phi = acos(v.y/r); //e [0,pi]
 		float pi = 3.14159265359f; //
 		
