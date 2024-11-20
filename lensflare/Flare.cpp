@@ -36,25 +36,23 @@ std::vector<glm::vec2> Flare::generateTextureCoordinatesForFlare(float size, con
 	///	alto de la pantalla respectivamente.
 
 	//bl
-	float s = 1; 
-	float t = 1;
 	
-	texture_coords.push_back(glm::vec2 (s,t));
+	float s0 = (-(center.x-(size/2)))/size; 
+	float s1 = (win_width-(center.x-(size/2)))/size; 
+	float t1 = (win_height-(center.y-(size/2)))/size;
+	float t0 = (-(center.y-(size/2)))/size;
+
+	
+	texture_coords.push_back(glm::vec2 (s0,t0));
 	//br
 	
-	s = 2;
-	t = 1;
-	texture_coords.push_back(glm::vec2 (s,t));
+	texture_coords.push_back(glm::vec2 (s1,t0));
 	//tr
 	
-	s = 2;
-	t = 2;
-	texture_coords.push_back(glm::vec2 (s,t));
+	texture_coords.push_back(glm::vec2 (s1,t1));
 	//tl
 	
-	s = 1;
-	t = 2;
-	texture_coords.push_back(glm::vec2 (s,t));
+	texture_coords.push_back(glm::vec2 (s0,t1));
 	return texture_coords;
 }
 
